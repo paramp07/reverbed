@@ -1,38 +1,66 @@
 # Reverbed
 
-A Python-based tool for creating slowed and reverbed versions of videos by processing audio and video content from YouTube.
+A Python package for creating slowed and reverbed versions of videos by processing audio and video content from YouTube.
 
 ## Features
 
 - Download and process audio from YouTube videos
-- Adjust audio speed and optionally add reverb effects
+- Adjust audio speed and add custom reverb effects
 - Loop video segments with custom start and end times
 - Combine processed audio with looped video
 - Support for multiple processing configurations
-
-## Prerequisites
-
-- Python 3.x
-- FFmpeg (for audio/video processing)
-- Required Python packages (see requirements.txt)
+- Interactive YouTube search with keyboard navigation
 
 ## Installation
 
+### From PyPI (Recommended)
+
+```bash
+pip install reverbed
+```
+
+### From Source
+
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/reverbed.git
+git clone https://github.com/paramp07/reverbed.git
 cd reverbed
 ```
 
-2. Create and activate a virtual environment:
+2. Install the package:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -e .
 ```
 
-3. Install dependencies:
+## Usage
+
+### Command Line Interface
+
+After installation, you can use the package from the command line:
+
 ```bash
-pip install -r requirements.txt
+reverbed
+```
+
+This will start the interactive interface where you can:
+1. Choose to use an example configuration or create a new one
+2. Input YouTube URLs or search for videos
+3. Customize audio speed and reverb effects
+4. Set video loop times
+5. Process and combine the final video
+
+### Python API
+
+You can also use the package programmatically:
+
+```python
+from reverbed import Reverbed
+
+# Create a Reverbed instance
+reverbed = Reverbed()
+
+# Process a video
+reverbed.process()
 ```
 
 ## Configuration
@@ -49,7 +77,11 @@ Create a `config.json` file with your processing settings. Example configuration
             "loop_video": "https://www.youtube.com/watch?v=example",
             "start_time": "20",
             "end_time": "30",
-            "final_video": "example1_output"
+            "final_video": "example1_output",
+            "room_size": 0.75,
+            "damping": 0.5,
+            "wet_level": 0.08,
+            "dry_level": 0.2
         }
     ]
 }
@@ -64,67 +96,22 @@ Create a `config.json` file with your processing settings. Example configuration
 - `start_time`: Start time for video loop (in seconds or MM:SS format)
 - `end_time`: End time for video loop (in seconds or MM:SS format)
 - `final_video`: Name for the output video file
-- `reverb_speed`: (Optional) Speed multiplier for the reverb effect. If not specified, no reverb will be applied.
+- `room_size`: Room size for reverb effect (0.0 to 1.0)
+- `damping`: Damping for reverb effect (0.0 to 1.0)
+- `wet_level`: Wet level for reverb effect (0.0 to 1.0)
+- `dry_level`: Dry level for reverb effect (0.0 to 1.0)
 
-## Configuration Examples
+## Requirements
 
-### Basic Configuration (No Reverb)
-```json
-{
-    "examples": [
-        {
-            "name": "Example 1",
-            "audio_url": "https://www.youtube.com/watch?v=example",
-            "audio_speed": 0.2,
-            "loop_video": "https://www.youtube.com/watch?v=example",
-            "start_time": "20",
-            "end_time": "30",
-            "final_video": "example1_output"
-        }
-    ]
-}
-```
-
-### Configuration with Reverb
-```json
-{
-    "examples": [
-        {
-            "name": "Example 2",
-            "audio_url": "https://www.youtube.com/watch?v=example",
-            "audio_speed": 0.2,
-            "reverb_speed": 0.5,
-            "loop_video": "https://www.youtube.com/watch?v=example",
-            "start_time": "20",
-            "end_time": "30",
-            "final_video": "example2_output"
-        }
-    ]
-}
-```
-
-## Usage
-
-1. Configure your settings in `config.json`
-2. Run the main script:
-```bash
-python main.py
-```
-
-The script will:
-1. Download the specified audio and video
-2. Process the audio according to the speed settings
-3. Extract and loop the specified video segment
-4. Combine the processed audio with the looped video
-5. Save the final output with the specified name
-
-## Output
-
-Processed videos will be saved in the output directory with the names specified in the configuration.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- Python 3.6 or higher
+- FFmpeg (for audio/video processing)
+- Required Python packages (automatically installed with pip):
+  - pytube
+  - moviepy
+  - yt-dlp
+  - soundfile
+  - pedalboard
+  - numpy
 
 ## License
 

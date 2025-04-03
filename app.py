@@ -31,6 +31,12 @@ class Reverbed:
         self.audio_output_path = None
         self.reverb_speed = None  # New instance variable for reverb speed
         
+        # Reverb parameters with default values
+        self.room_size = 0.75
+        self.damping = 0.5
+        self.wet_level = 0.08
+        self.dry_level = 0.2
+        
         # Load configuration
         try:
             with open('config.json', 'r') as f:
@@ -87,6 +93,12 @@ class Reverbed:
             self.final_video = example['final_video']
             self.reverb_speed = example.get('reverb_speed')  # Optional reverb speed
             
+            # Load reverb parameters if they exist in the config
+            self.room_size = example.get('room_size', 0.75)
+            self.damping = example.get('damping', 0.5)
+            self.wet_level = example.get('wet_level', 0.08)
+            self.dry_level = example.get('dry_level', 0.2)
+            
             # Get titles safely
             self.video_title = self.remove_illegal_characters(self.get_video_title(self.loop_video))
             self.audio_title = self.remove_illegal_characters(self.get_video_title(self.audio_url))
@@ -108,26 +120,27 @@ class Reverbed:
     def assign_values(self):
         try:
             self.clear_console()
-            print("\nChoose an option:")
-            print("1. Use example configuration")
-            print("2. Input custom values")
-            print("3. Exit")
-            
-            choice = input("Enter your choice (1-3): ")
-            
+            print("Welcome to Reverbed!")
+            print("1. Use example")
+            print("2. Create new")
+            choice = input("> ")
+
             if choice == "1":
-                self.clear_console()
+                # Display available examples
                 print("\nAvailable examples:")
                 for i, example in enumerate(self.config['examples'], 1):
                     print(f"{i}. {example['name']}")
                 
-                example_choice = int(input("\nSelect an example (enter number): ")) - 1
-                if 0 <= example_choice < len(self.config['examples']):
-                    self.load_example(self.config['examples'][example_choice])
-                    return "yes"
-                else:
-                    print("Invalid example number")
-                    return "none"
+                # Get user selection
+                while True:
+                    try:
+                        selection = int(input("\nSelect an example (number): "))
+                        if 1 <= selection <= len(self.config['examples']):
+                            self.load_example(self.config['examples'][selection-1])
+                            return "yes"
+                        print("Invalid selection. Please try again.")
+                    except ValueError:
+                        print("Please enter a valid number.")
                     
             elif choice == "2":
                 # Handle audio URL input
@@ -181,6 +194,37 @@ class Reverbed:
                 self.start_time = input('When would you like the video to start?: ')
                 self.end_time = input('When would you like the video to end?: ')
                 self.final_video = input("what do you want the end product to be called?: ")
+                
+                # Ask if user wants to add reverb
+                self.clear_console()
+                add_reverb = input("Would you like to add reverb? (y/n): ").lower()
+                if add_reverb == 'y':
+                    self.reverb_speed = 1.0  # Default reverb speed
+                    
+                    # Ask for custom reverb parameters
+                    self.clear_console()
+                    print("Enter reverb parameters (press Enter to use defaults):")
+                    
+                    try:
+                        room_size_input = input(f"Room size (default: {self.room_size}): ")
+                        if room_size_input.strip():
+                            self.room_size = float(room_size_input)
+                            
+                        damping_input = input(f"Damping (default: {self.damping}): ")
+                        if damping_input.strip():
+                            self.damping = float(damping_input)
+                            
+                        wet_level_input = input(f"Wet level (default: {self.wet_level}): ")
+                        if wet_level_input.strip():
+                            self.wet_level = float(wet_level_input)
+                            
+                        dry_level_input = input(f"Dry level (default: {self.dry_level}): ")
+                        if dry_level_input.strip():
+                            self.dry_level = float(dry_level_input)
+                    except ValueError:
+                        print("Invalid input. Using default values.")
+                else:
+                    self.reverb_speed = None
                 
                 # Get titles safely
                 self.video_title = self.remove_illegal_characters(self.get_video_title(self.loop_video))
@@ -266,7 +310,7 @@ class Reverbed:
             print(f"Error downloading audio: {e}")
             raise
 
-    def slowed_reverb(self, audio, output, speed=0.4):
+    def slowed_reverb(self, audio, output, speed=0.4, room_size=0.75, damping=0.5, wet_level=0.08, dry_level=0.2):
         try:
             if '.wav' not in audio:
                 print('Audio needs to be .wav!')
@@ -283,10 +327,10 @@ class Reverbed:
             if self.reverb_speed is not None:
                 print('Adding reverb...')
                 board = Pedalboard([Reverb(
-                    room_size=.75,
-                    damping=0.5,
-                    wet_level=0.08,
-                    dry_level=0.2
+                    room_size=room_size,
+                    damping=damping,
+                    wet_level=wet_level,
+                    dry_level=dry_level
                 )])
                 effected = board(audio_data, sample_rate)
             else:
@@ -348,7 +392,15 @@ class Reverbed:
 
                 # ADD EFFECTS TO AUDIO
                 reverb_output_name = f'reverb - {self.audio_title}.wav'
-                self.slowed_reverb(self.audio_output_path, reverb_output_name, self.audio_speed)
+                self.slowed_reverb(
+                    self.audio_output_path, 
+                    reverb_output_name, 
+                    self.audio_speed,
+                    self.room_size,
+                    self.damping,
+                    self.wet_level,
+                    self.dry_level
+                )
                 remove(self.audio_output_path)
 
                 # DOWNLOAD LOOP VIDEO
@@ -365,7 +417,7 @@ class Reverbed:
         except Exception as e:
             print(f"Error in process: {e}")
 
-    def search_youtube(self, query, max_results=5):
+    def search_youtube(self, query, max_results=10):
         """Search YouTube and return a list of video results"""
         try:
             search = Search(query)
@@ -382,6 +434,7 @@ class Reverbed:
 
     def select_from_search(self, results):
         """Display search results and let user select one using arrow keys"""
+        
         if not results:
             print("No results found.")
             return None
@@ -394,7 +447,7 @@ class Reverbed:
             print("\nSearch Results:")
             for i, result in enumerate(results):
                 prefix = "➡️    " if i == current_index else "  "
-                print(f"{prefix}{i+1}. {result['title']}")
+                print(f"{prefix}{i+1}. {result['title']} ")
             
             # Get keyboard input
             key = msvcrt.getch()
