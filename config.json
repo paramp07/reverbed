@@ -1,0 +1,22 @@
+{
+    "examples": [
+        {
+            "name": "Example 1",
+            "audio_url": "https://www.youtube.com/watch?v=qDascklcshU&ab_channel=FutureVEVO",
+            "audio_speed": 0.2,
+            "loop_video": "https://www.youtube.com/watch?v=qDascklcshU&ab_channel=FutureVEVO",
+            "start_time": "20",
+            "end_time": "30",
+            "final_video": "example1_output"
+        },
+        {
+            "name": "Example 2",
+            "audio_url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
+            "audio_speed": 0.7,
+            "loop_video": "https://www.youtube.com/watch?v=OPf0YbXqDm0",
+            "start_time": "0:00",
+            "end_time": "0:45",
+            "final_video": "example2_output"
+        }
+    ]
+} 
