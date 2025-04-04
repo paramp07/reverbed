@@ -1,13 +1,4 @@
-# Ignore all MP4 files
-*.mp4
-
-# Ignore all audio files
-*.wav
-*.m4a
-*.mp3
-*.aac
-
-# Python specific ignores
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -29,13 +20,77 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
 
-# IDE specific ignores
+# Virtual Environment
+venv/
+ENV/
+env/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
 
-# OS specific ignores
+# OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+*.db
+desktop.ini
+.directory
+
+# Project specific
+*.mp4
+*.wav
+*.m4a
+*.mp3
+*.aac
+Songs/
+Finished Product/
+temp/
+logs/
+*.log
+
+# Secrets and credentials
+.env
+.pypirc
+*.pem
+*.key
+secrets.json
+credentials.json
+
+# Documentation
+_build/
+.docusaurus
+.cache/
+.sphinx-build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Package specific temporary files
+config.json.backup
+*.tmp
+*.temp
+*.bak

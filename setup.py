@@ -7,11 +7,11 @@ setup(
     name="reverbed",
     version="0.1.0",
     author="Param Patel",
-    author_email="your.email@example.com",
+    author_email="parampatel0767@gmail.com",  # Replace with your actual email
     description="A Python package for creating slowed and reverbed versions of videos",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/paramp07/reverbed",
+    url="https://github.com/paramp07/reverbed-python-runner",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

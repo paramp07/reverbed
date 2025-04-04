@@ -36,7 +36,7 @@ def download_video(url, output_path, start_time, end_time):
             '-to', end_time,
             '-i', output_path,
             '-c:v', 'libx264',
-            '-preset', 'medium',
+            '-preset', 'ultrafast',
             '-crf', '23',
             '-c:a', 'aac',
             '-b:a', '192k',

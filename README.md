@@ -1,5 +1,7 @@
 # Reverbed
 
+![alt text](<logo.png>)
+
 A Python package for creating slowed and reverbed versions of videos by processing audio and video content from YouTube.
 
 ## Features
@@ -51,21 +53,28 @@ This will start the interactive interface where you can:
 
 ### Python API
 
-You can also use the package programmatically:
-
 ```python
 from reverbed import Reverbed
 
 # Create a Reverbed instance
 reverbed = Reverbed()
 
-# Process a video
+# Process a video using interactive mode
+reverbed.process()
+
+# Or configure programmatically
+reverbed.audio_url = "https://www.youtube.com/watch?v=example"
+reverbed.audio_speed = 0.8
+reverbed.loop_video = "https://www.youtube.com/watch?v=example"
+reverbed.start_time = "0:20"
+reverbed.end_time = "0:30"
+reverbed.final_video = "output_video"
 reverbed.process()
 ```
 
 ## Configuration
 
-Create a `config.json` file with your processing settings. Example configuration:
+Create a `config.json` file with your processing settings:
 
 ```json
 {
@@ -73,7 +82,7 @@ Create a `config.json` file with your processing settings. Example configuration
         {
             "name": "Example 1",
             "audio_url": "https://www.youtube.com/watch?v=example",
-            "audio_speed": 0.2,
+            "audio_speed": 0.8,
             "loop_video": "https://www.youtube.com/watch?v=example",
             "start_time": "20",
             "end_time": "30",
@@ -89,23 +98,85 @@ Create a `config.json` file with your processing settings. Example configuration
 
 ### Configuration Parameters
 
-- `name`: Name of the processing example
-- `audio_url`: YouTube URL for the audio source
-- `audio_speed`: Speed multiplier for the audio (0.0 to 1.0)
-- `loop_video`: YouTube URL for the video to loop
-- `start_time`: Start time for video loop (in seconds or MM:SS format)
-- `end_time`: End time for video loop (in seconds or MM:SS format)
-- `final_video`: Name for the output video file
-- `room_size`: Room size for reverb effect (0.0 to 1.0)
-- `damping`: Damping for reverb effect (0.0 to 1.0)
-- `wet_level`: Wet level for reverb effect (0.0 to 1.0)
-- `dry_level`: Dry level for reverb effect (0.0 to 1.0)
+| Parameter | Type | Description | Range |
+|-----------|------|-------------|--------|
+| `name` | string | Name of the processing example | - |
+| `audio_url` | string | YouTube URL for audio source | Valid YouTube URL |
+| `audio_speed` | float | Speed multiplier for audio | 0.0 to 1.0 |
+| `loop_video` | string | YouTube URL for video to loop | Valid YouTube URL |
+| `start_time` | string | Start time for video loop | Seconds or "MM:SS" |
+| `end_time` | string | End time for video loop | Seconds or "MM:SS" |
+| `final_video` | string | Output video filename | - |
+| `room_size` | float | Room size for reverb effect | 0.0 to 1.0 |
+| `damping` | float | Damping for reverb effect | 0.0 to 1.0 |
+| `wet_level` | float | Wet level for reverb effect | 0.0 to 1.0 |
+| `dry_level` | float | Dry level for reverb effect | 0.0 to 1.0 |
+
+## API Reference
+
+### Core Module
+
+#### `class Reverbed`
+
+Main class for video processing.
+
+Methods:
+- `__init__()`: Initialize Reverbed instance
+- `process()`: Process video with current settings
+- `load_example(example)`: Load settings from example configuration
+- `assign_values()`: Interactive configuration of settings
+
+### Utility Functions
+
+#### Audio Processing
+
+```python
+from reverbed import download_audio, slowed_reverb
+
+# Download audio from YouTube
+download_audio(video_url, output_path, audio_format='wav')
+
+# Apply slowed and reverb effects
+slowed_reverb(
+    audio_file,
+    output_file,
+    speed=0.8,
+    room_size=0.75,
+    damping=0.5,
+    wet_level=0.08,
+    dry_level=0.2
+)
+```
+
+#### Video Processing
+
+```python
+from reverbed import download_video, combine_audio_video
+
+# Download and trim video
+download_video(url, output_path, start_time, end_time)
+
+# Combine audio and video
+combine_audio_video(audio_file, video_file, output_name)
+```
+
+#### YouTube Search
+
+```python
+from reverbed import search_youtube, select_from_search
+
+# Search YouTube
+results = search_youtube(query, max_results=10)
+
+# Interactive result selection
+selected_url = select_from_search(results)
+```
 
 ## Requirements
 
 - Python 3.6 or higher
 - FFmpeg (for audio/video processing)
-- Required Python packages (automatically installed with pip):
+- Required Python packages (automatically installed):
   - pytube
   - moviepy
   - yt-dlp
@@ -113,12 +184,56 @@ Create a `config.json` file with your processing settings. Example configuration
   - pedalboard
   - numpy
 
+## Development
+
+### Setting up Development Environment
+
+1. Clone the repository
+2. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+3. Install development dependencies:
+```bash
+pip install -e ".[dev]"
+```
+
+### Running Tests
+
+```bash
+python -m pytest tests/
+```
+
+### Building the Package
+
+```bash
+python -m build
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests
+5. Submit a pull request
+
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
 - FFmpeg for audio/video processing
 - YouTube-DL for video downloading
-- Other open-source libraries used in this project 
+- All contributors and users of this package
+
+## Changelog
+
+### 0.1.0 (Initial Release)
+- Basic functionality for video processing
+- YouTube video download support
+- Audio speed and reverb effects
+- Video looping capabilities
+- Interactive YouTube search
