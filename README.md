@@ -1,6 +1,6 @@
-# Reverbed
-
 ![alt text](<resources/logo.png>)
+
+# Reverbed
 
 A Python package for creating slowed and reverbed versions of videos by processing audio and video content from YouTube.
 
