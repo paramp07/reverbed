@@ -2,7 +2,7 @@
 Reverbed - A Python package for creating slowed and reverbed versions of videos
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"  # Updated version number
 
 from .core import Reverbed
 from .utils import remove_illegal_characters, is_valid_youtube_url
@@ -20,4 +20,4 @@ __all__ = [
     'combine_audio_video',
     'search_youtube',
     'select_from_search'
-] 
+]
